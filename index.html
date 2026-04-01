@@ -1,1 +1,12 @@
-<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>Chart.js Interactive Plots</title>\n    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>\n</head>\n<body>\n    <h1>Interactive Charts</h1>\n    <canvas id="myChart" width="400" height="200"></canvas>\n    <script>\n        // Fetch JSON data and create plots\n        fetch('data.json')  // Ensure data.json is available in the same directory\n            .then(response => response.json())\n            .then(data => {\n                const ctx = document.getElementById('myChart').getContext('2d');\n                const myChart = new Chart(ctx, {\n                    type: 'line', // Choose the chart type\n                    data: {\n                        labels: data.labels, // Data labels from JSON\n                        datasets: [{\n                            label: 'My Dataset',\n                            data: data.values, // Data values from JSON\n                            borderColor: 'rgba(75, 192, 192, 1)',\n                            borderWidth: 2,\n                        }]\n                    },\n                    options: {\n                        responsive: true,\n                        scales: {\n                            y: {\n                                beginAtZero: true\n                            }\n                        }\n                    }\n                });\n            })\n            .catch(error => console.error('Error fetching data:', error));\n    </script>\n</body>\n</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index Page</title>
+</head>
+<body>
+    <h1>Welcome to the MJN Misc</h1>
+    <p>This is a simple index page with properly formatted HTML.</p>
+</body>
+</html>

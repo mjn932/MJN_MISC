@@ -1,37 +1,74 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Server Time Display</title>
-    <script>
-        async function fetchServerTime() {
-            try {
-                const response = await fetch('https://timeapi.io/api/Time/current/zone?timeZone=UTC');
-                const data = await response.json();
-                const serverTime = new Date(data.dateTime); // from timeapi.io API
-                document.getElementById('server-time').innerText = 'Server Time: ' + serverTime.toUTCString();
-                generateXAxisLabels(serverTime);
-            } catch (error) {
-                console.error('Error fetching server time:', error);
-            }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chart.js Interactive Plots</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
         }
-
-        function generateXAxisLabels(startTime) {
-            const labelsContainer = document.getElementById('x-axis-labels');
-            labelsContainer.innerHTML = ''; // clear old labels if reloaded
-            for (let i = 0; i < 60; i++) { // Generate labels for 60 minutes
-                const timeLabel = new Date(startTime);
-                timeLabel.setMinutes(timeLabel.getMinutes() + i);
-                const labelItem = document.createElement('div');
-                labelItem.innerText = timeLabel.toUTCString();
-                labelsContainer.appendChild(labelItem);
-            }
+        canvas {
+            max-width: 100%;
         }
-
-        window.onload = fetchServerTime;
-    </script>
+    </style>
 </head>
 <body>
-    <h1 id='server-time'>Fetching server time...</h1>
-    <div id='x-axis-labels'></div>
+    <h1>Interactive Charts from JSON Data</h1>
+    <canvas id="myChart"></canvas>
+    <script>
+        // Fetch JSON data and create plots
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                const ctx = document.getElementById('myChart').getContext('2d');
+                const datasets = data.datasets.map((dataset, index) => {
+                    const colors = [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ];
+                    return {
+                        label: dataset.label,
+                        data: dataset.y,
+                        borderColor: colors[index % colors.length],
+                        backgroundColor: colors[index % colors.length].replace('1)', '0.1)'),
+                        borderWidth: 2,
+                        tension: 0.1
+                    };
+                });
+                const myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.datasets[0].x,
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Data Visualization'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    </script>
 </body>
 </html>

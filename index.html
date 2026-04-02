@@ -1,1 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Server Time Display</title>
+    <script>
+        async function fetchServerTime() {
+            try {
+                const response = await fetch('https://timeapi.io/api/Time/current/zone?timeZone=UTC');
+                const data = await response.json();
+                const serverTime = new Date(data.dateTime); // from timeapi.io API
+                document.getElementById('server-time').innerText = 'Server Time: ' + serverTime.toUTCString();
+                generateXAxisLabels(serverTime);
+            } catch (error) {
+                console.error('Error fetching server time:', error);
+            }
+        }
 
+        function generateXAxisLabels(startTime) {
+            const labelsContainer = document.getElementById('x-axis-labels');
+            labelsContainer.innerHTML = ''; // clear old labels if reloaded
+            for (let i = 0; i < 60; i++) { // Generate labels for 60 minutes
+                const timeLabel = new Date(startTime);
+                timeLabel.setMinutes(timeLabel.getMinutes() + i);
+                const labelItem = document.createElement('div');
+                labelItem.innerText = timeLabel.toUTCString();
+                labelsContainer.appendChild(labelItem);
+            }
+        }
+
+        window.onload = fetchServerTime;
+    </script>
+</head>
+<body>
+    <h1 id='server-time'>Fetching server time...</h1>
+    <div id='x-axis-labels'></div>
+</body>
+</html>

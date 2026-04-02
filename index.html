@@ -28,6 +28,7 @@
                 const data = await response.json();
                 const serverTime = new Date(data.dateTime);
                 document.getElementById('server-time').innerText = 'Server Time: ' + serverTime.toUTCString();
+                console.log("here");
                 initializeChart(serverTime);
             } catch (error) {
                 console.error('Error fetching server time:', error);
